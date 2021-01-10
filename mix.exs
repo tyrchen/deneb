@@ -44,7 +44,11 @@ defmodule Deneb.MixProject do
     [
       {:jason, "~> 1.2"},
       {:elixir_uuid, "~> 1.2"},
-      {:typed_struct, "~> 0.2"}
+      {:typed_struct, "~> 0.2"},
+
+      # dev/test deps
+      {:ex_doc, "~> 0.23", only: :dev, runtime: false},
+      {:credo, "~> 1.5", only: [:dev]}
     ]
   end
 
