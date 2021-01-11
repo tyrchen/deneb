@@ -30,8 +30,9 @@ defmodule Deneb.Chart do
     }
   end
 
-  def to_json(%Chart{} = chart), do: Utils.to_json(chart)
-  def to_json(_chart), do: raise "Please provide an Chart object to this function"
+  def to_json(chart, base_chart_opts \\ [])
+  def to_json(%Chart{} = chart, base_chart_opts), do: Utils.to_json(chart, base_chart_opts)
+  def to_json(_chart, _base_chart_opts), do: raise "Please provide an Chart object to this function"
 
   def repeat(chart, repeat) do
     data = Chart.to_json(chart)

@@ -3,12 +3,14 @@ defmodule Deneb.Utils do
   Utility functions
   """
 
-  def to_json(struct) do
-    cond do
+  def to_json(struct, base_chart_opts \\ []) do
+    opts = encode(base_chart_opts)
+    data = cond do
       is_map(struct.raw) -> struct.raw
       is_binary(struct.raw) -> Jason.decode!(struct.raw)
       true -> encode(struct)
     end
+    Map.merge(data, opts)
   end
 
   def encode(struct) when is_struct(struct) do
