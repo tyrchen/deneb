@@ -4,13 +4,14 @@ defmodule Deneb.Chart do
   """
   use TypedStruct
 
-  alias Deneb.{Chart, Mark, Encoding, Projection, Transform, Utils}
+  alias Deneb.{Chart, Mark, Encoding, Projection, Selection, Transform, Utils}
 
   typedstruct do
     @typedoc "chart properties"
     field :mark, Mark.t() | nil, default: nil
     field :encoding, Encoding.t() | nil, default: nil
-    field :projection, Projection.t() | nil, default: nil
+    field :projection, Selection.t() | nil, default: nil
+    field :selection, Projection.t() | nil, default: nil
     field :transform, Transform.t() | nil, default: nil
     field :raw, String.t() | map() | nil, default: nil
   end
@@ -21,10 +22,11 @@ defmodule Deneb.Chart do
     }
   end
 
-  def new(mark, encoding, transform \\ nil, projection \\ nil) do
+  def new(mark, encoding, selection \\ nil, transform \\ nil, projection \\ nil) do
     %Chart {
       mark: mark,
       encoding: encoding,
+      selection: selection,
       transform: transform,
       projection: projection
     }

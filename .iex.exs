@@ -1,4 +1,4 @@
-alias Deneb.{Chart, Encoding, Mark, Projection, Transform, Viewer}
+alias Deneb.{Chart, Encoding, Mark, Projection, Selection, Transform, Viewer}
 encoding = %{
   color: %{condition: %{test: "datum.open < datum.close", value: "#06982d"}, value: "##ae1325"},
   x: %{
