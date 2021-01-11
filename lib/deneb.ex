@@ -5,7 +5,7 @@ defmodule Deneb do
   @formats [:json, :csv, :tsv, :dsv, :url]
   @schema "https://vega.github.io/schema/vega-lite/v4.json"
 
-  def to_json(data, spec, format \\ :csv, delimiter \\ nil) do
+  def to_json(spec, data, format \\ :csv, delimiter \\ nil) do
     spec
     |> Map.put(:data, to_data_json(data, format, delimiter))
     |> Map.put(:"$schema", @schema)

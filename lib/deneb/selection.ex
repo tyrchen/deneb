@@ -42,8 +42,8 @@ defmodule Deneb.Selection do
 
   def to_json(%Selection{} = selection) do
     name = selection.name
-    sel = %{selection | name: nil}
-    %{name => Utils.to_json(sel)}
+    map = selection |> Map.from_struct() |> Map.drop([:__meta__, :__struct__, :raw, :name])
+    %{name => Utils.to_json(map)}
   end
   def to_json(_selection), do: raise "Please provide a Selection object to this function"
 

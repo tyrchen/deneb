@@ -22,7 +22,10 @@ defmodule Deneb.Chart do
     }
   end
 
-  def new(mark, encoding, selection \\ nil, transform \\ nil, projection \\ nil) do
+  def new(mark, encoding, opts \\ []) do
+    selection = opts[:selection] || nil
+    transform = opts[:transform] || nil
+    projection = opts[:projection] || nil
     %Chart {
       mark: mark,
       encoding: encoding,
@@ -33,27 +36,39 @@ defmodule Deneb.Chart do
   end
 
   def to_json(chart, base_chart_opts \\ [])
-  def to_json(%Chart{} = chart, base_chart_opts), do: Utils.to_json(chart, base_chart_opts)
+  def to_json(%Chart{} = chart, base_chart_opts) do
+    result = chart
+    |> Utils.to_map()
+    |> Enum.reduce(%{}, fn {k, v}, acc ->
+      cond do
+        is_struct(v) -> Map.put(acc, k, apply(v.__struct__, :to_json, [v]))
+        is_nil(v) -> acc
+        true -> Map.put(acc, k, v)
+      end
+
+    end)
+    Map.merge(result, Utils.encode(base_chart_opts))
+  end
   def to_json(_chart, _base_chart_opts), do: raise "Please provide an Chart object to this function"
 
-  def repeat(chart, repeat) do
-    data = Chart.to_json(chart)
+  def repeat(chart, repeat, base_chart_opts \\ []) do
+    data = Chart.to_json(chart, base_chart_opts)
     Utils.encode(%{spec: data, repeat: repeat})
   end
 
   def layer(charts, base_chart_opts \\ []) do
     data = Utils.encode(base_chart_opts)
-    Map.put(data, :layer, Enum.map(charts, &Utils.to_json/1))
+    Map.put(data, :layer, charts_to_json(charts))
   end
 
   def hconcat(charts, base_chart_opts \\ []) do
     data = Utils.encode(base_chart_opts)
-    Map.put(data, :hconcat, Enum.map(charts, &Utils.to_json/1))
+    Map.put(data, :hconcat, charts_to_json(charts))
   end
 
   def vconcat(charts, base_chart_opts \\ []) do
     data = Utils.encode(base_chart_opts)
-    Map.put(data, :vconcat, Enum.map(charts, &Utils.to_json/1))
+    Map.put(data, :vconcat, charts_to_json(charts))
   end
 
   def concat(charts, columns \\ 2, base_chart_opts \\ []) do
@@ -61,5 +76,15 @@ defmodule Deneb.Chart do
     data
     |> Map.put(:columns, columns)
     |> Map.put(:concat, Enum.map(charts, &Chart.to_json/1))
+  end
+
+  # private functions
+  defp charts_to_json(charts) do
+    Enum.map(charts, fn chart ->
+      case is_struct(chart) do
+        true -> apply(chart.__struct__, :to_json, [chart])
+        _ -> chart
+      end
+    end)
   end
 end

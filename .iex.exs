@@ -15,4 +15,4 @@ ohlc = "date,open,high,low,close,signal,ret\n2009-06-01,28.7,30.05,28.45,30.04,s
 chart1 = Chart.new(Mark.new(:rule), Encoding.new(%{y: %{field: "low"}, y2: %{field: "high"}}))
 chart2 = Chart.new(Mark.new(:bar), Encoding.new(%{y: %{field: "open"}, y2: %{field: "close"}}))
 chart = Chart.layer([chart1, chart2], [encoding: encoding, width: 800, height: 600])
-spec = Deneb.to_json(ohlc, chart)
+spec = Deneb.to_json(chart, ohlc)
