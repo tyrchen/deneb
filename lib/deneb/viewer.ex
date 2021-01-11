@@ -60,7 +60,7 @@ defmodule Deneb.Viewer do
   </script>
   """
 
-  def display(chart, opts \\ %{}) do
+  def display(chart, inline \\ true, opts \\ %{}) do
     output_div = "deneb-chart-#{UUID.uuid4(:hex)}"
     vega = package_url("vega")
     vega_lite = package_url("vega-lite")
@@ -69,7 +69,7 @@ defmodule Deneb.Viewer do
     spec = Jason.encode!(chart)
     opts = Jason.encode!(opts)
 
-    EEx.eval_string(@inline_html,
+    result = EEx.eval_string(@inline_html,
       output_div: output_div,
       vega: vega,
       vega_lite: vega_lite,
@@ -77,6 +77,11 @@ defmodule Deneb.Viewer do
       spec: spec,
       opts: opts
     )
+
+    case inline do
+      true -> {:"this is raw html", result}
+      _ -> result
+    end
   end
 
   defp package_url(pkg) do
