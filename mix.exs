@@ -1,7 +1,7 @@
 defmodule Deneb.MixProject do
   use Mix.Project
 
-  @version "0.2.1"
+  @version "0.2.2"
   @vega "5.18.0"
   @vega_lite "4.17.0"
   @vega_embed "6.15.0"

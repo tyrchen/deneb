@@ -11,7 +11,7 @@ defmodule Deneb.Transform do
     field :raw, String.t() | map() | nil, default: nil
   end
 
-  def new(raw) when is_binary(raw) or is_map(raw) do
+  def new(raw) when is_binary(raw) or is_map(raw) or is_list(raw) do
     %Transform {
       raw: raw
     }

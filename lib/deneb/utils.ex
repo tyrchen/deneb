@@ -7,11 +7,15 @@ defmodule Deneb.Utils do
     opts = encode(base_chart_opts)
     raw = Map.get(struct, :raw)
     data = cond do
+      is_list(raw) -> struct.raw
       is_map(raw) -> struct.raw
       is_binary(raw) -> Jason.decode!(struct.raw)
       true -> struct |> to_map() |> encode()
     end
-    Map.merge(data, opts)
+    case Enum.empty?(opts) do
+      true -> data
+      _ -> Map.merge(data, opts)
+    end
   end
 
   def to_map(struct) when is_struct(struct) do
@@ -22,6 +26,7 @@ defmodule Deneb.Utils do
 
   def encode(struct) when is_struct(struct), do: apply(struct.__struct__, :to_json, [struct])
 
+  def encode([h|_] = items) when is_map(h), do: Enum.map(items, fn map -> encode(map) end)
   def encode(map) when is_map(map) or is_list(map) do
     Enum.reduce(map, %{}, fn {k, v}, acc ->
       cond do
